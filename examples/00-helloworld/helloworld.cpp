@@ -22,35 +22,47 @@ public:
 
 	void init(int32_t _argc, const char* const* _argv, uint32_t _width, uint32_t _height) override
 	{
+		// 使用传入的参数创建Args对象，这个对象将被用于解析命令行参数。
 		Args args(_argc, _argv);
 
+		// 初始化成员变量，将传入的宽度和高度赋值给类成员变量。
 		m_width  = _width;
 		m_height = _height;
+		// 设置调试标志为BGFX_DEBUG_TEXT，表示启用调试文本。
 		m_debug  = BGFX_DEBUG_TEXT;
+		// 设置重置标志为BGFX_RESET_VSYNC，表示在垂直同步时重置。
 		m_reset  = BGFX_RESET_VSYNC;
 
+		// 创建bgfx的初始化结构体init。
 		bgfx::Init init;
+		// 设置渲染API类型。
 		init.type     = args.m_type;
+		// 设置渲染设备的厂商ID。
 		init.vendorId = args.m_pciId;
+		// 设置平台数据，包括窗口句柄和显示器句柄等。
 		init.platformData.nwh  = entry::getNativeWindowHandle(entry::kDefaultWindowHandle);
 		init.platformData.ndt  = entry::getNativeDisplayHandle();
 		init.platformData.type = entry::getNativeWindowHandleType();
+		// 设置渲染分辨率。
 		init.resolution.width  = m_width;
 		init.resolution.height = m_height;
+		// 设置渲染重置状态。
 		init.resolution.reset  = m_reset;
+		// 使用bgfx库的初始化函数进行初始化。
 		bgfx::init(init);
 
-		// Enable debug text.
+		// 启用调试文本。
 		bgfx::setDebug(m_debug);
 
-		// Set view 0 clear state.
+		// 设置视图0的清除状态，这里清除颜色和深度缓冲。
 		bgfx::setViewClear(0
 			, BGFX_CLEAR_COLOR|BGFX_CLEAR_DEPTH
-			, 0x303030ff
-			, 1.0f
-			, 0
+			, 0x303030ff // 清除颜色，使用RGBA格式，0x303030ff表示灰色。
+			, 1.0f        // 清除深度，1.0表示最远处。
+			, 0           // 清除模板缓冲。
 			);
 
+		// 创建imgui的相关资源，用于在渲染中集成ImGui。
 		imguiCreate();
 	}
 
