@@ -180,13 +180,18 @@ public:
 
 	void init(int32_t _argc, const char* const* _argv, uint32_t _width, uint32_t _height) override
 	{
+		// 解析命令行参数
 		Args args(_argc, _argv);
 
+		// 设置窗口宽度和高度
 		m_width  = _width;
 		m_height = _height;
+
+		// 设置调试和重置选项
 		m_debug  = BGFX_DEBUG_NONE;
 		m_reset  = BGFX_RESET_VSYNC;
 
+		// 初始化渲染器
 		bgfx::Init init;
 		init.type     = args.m_type;
 		init.vendorId = args.m_pciId;
@@ -198,62 +203,43 @@ public:
 		init.resolution.reset  = m_reset;
 		bgfx::init(init);
 
-		// Enable debug text.
+		// 启用调试文本
 		bgfx::setDebug(m_debug);
 
-		// Set view 0 clear state.
-		bgfx::setViewClear(0
-			, BGFX_CLEAR_COLOR|BGFX_CLEAR_DEPTH
-			, 0x303030ff
-			, 1.0f
-			, 0
-			);
+		// 设置视图0的清除状态
+		bgfx::setViewClear(0, BGFX_CLEAR_COLOR|BGFX_CLEAR_DEPTH, 0x303030ff, 1.0f, 0);
 
-		// Create vertex stream declaration.
+		// 创建顶点流声明
 		PosColorVertex::init();
 
-		// Create static vertex buffer.
+		// 创建静态顶点缓冲区
 		m_vbh = bgfx::createVertexBuffer(
-			// Static data can be passed with bgfx::makeRef
-			  bgfx::makeRef(s_cubeVertices, sizeof(s_cubeVertices) )
-			, PosColorVertex::ms_layout
-			);
+			bgfx::makeRef(s_cubeVertices, sizeof(s_cubeVertices)),
+			PosColorVertex::ms_layout
+		);
 
-		// Create static index buffer for triangle list rendering.
-		m_ibh[0] = bgfx::createIndexBuffer(
-			// Static data can be passed with bgfx::makeRef
-			bgfx::makeRef(s_cubeTriList, sizeof(s_cubeTriList) )
-			);
+		// 创建三角形列表渲染的静态索引缓冲区
+		m_ibh[0] = bgfx::createIndexBuffer(bgfx::makeRef(s_cubeTriList, sizeof(s_cubeTriList)));
 
-		// Create static index buffer for triangle strip rendering.
-		m_ibh[1] = bgfx::createIndexBuffer(
-			// Static data can be passed with bgfx::makeRef
-			bgfx::makeRef(s_cubeTriStrip, sizeof(s_cubeTriStrip) )
-			);
+		// 创建三角形条带渲染的静态索引缓冲区
+		m_ibh[1] = bgfx::createIndexBuffer(bgfx::makeRef(s_cubeTriStrip, sizeof(s_cubeTriStrip)));
 
-		// Create static index buffer for line list rendering.
-		m_ibh[2] = bgfx::createIndexBuffer(
-			// Static data can be passed with bgfx::makeRef
-			bgfx::makeRef(s_cubeLineList, sizeof(s_cubeLineList) )
-			);
+		// 创建线段列表渲染的静态索引缓冲区
+		m_ibh[2] = bgfx::createIndexBuffer(bgfx::makeRef(s_cubeLineList, sizeof(s_cubeLineList)));
 
-		// Create static index buffer for line strip rendering.
-		m_ibh[3] = bgfx::createIndexBuffer(
-			// Static data can be passed with bgfx::makeRef
-			bgfx::makeRef(s_cubeLineStrip, sizeof(s_cubeLineStrip) )
-			);
+		// 创建线段条带渲染的静态索引缓冲区
+		m_ibh[3] = bgfx::createIndexBuffer(bgfx::makeRef(s_cubeLineStrip, sizeof(s_cubeLineStrip)));
 
-		// Create static index buffer for point list rendering.
-		m_ibh[4] = bgfx::createIndexBuffer(
-			// Static data can be passed with bgfx::makeRef
-			bgfx::makeRef(s_cubePoints, sizeof(s_cubePoints) )
-			);
+		// 创建点列表渲染的静态索引缓冲区
+		m_ibh[4] = bgfx::createIndexBuffer(bgfx::makeRef(s_cubePoints, sizeof(s_cubePoints)));
 
-		// Create program from shaders.
+		// 从着色器加载程序
 		m_program = loadProgram("vs_cubes", "fs_cubes");
 
+		// 设置时间偏移
 		m_timeOffset = bx::getHPCounter();
 
+		// 创建 ImGui 上下文
 		imguiCreate();
 	}
 
