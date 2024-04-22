@@ -63,22 +63,35 @@ static PosColorVertex s_cubeVertices[] =
     { 1.0f, -1.0f, -1.0f, 0xffffffff },
 };
 
+// 定义一个静态常量数组 s_cubeTriList，用于存储立方体的三角形索引列表
 static const uint16_t s_cubeTriList[] =
 {
-	0, 1, 2, // 0
-	1, 3, 2,
-	4, 6, 5, // 2
-	5, 6, 7,
-	0, 2, 4, // 4
-	4, 2, 6,
-	1, 5, 3, // 6
-	5, 7, 3,
-	0, 4, 1, // 8
-	4, 5, 1,
-	2, 3, 6, // 10
-	6, 3, 7,
+    // 第一个三角形（0）
+    0, 1, 2, // 顶点索引
+    1, 3, 2, // 顶点索引
+
+    // 第二个三角形（2）
+    4, 6, 5, // 顶点索引
+    5, 6, 7, // 顶点索引
+
+    // 第三个三角形（4）
+    0, 2, 4, // 顶点索引
+    4, 2, 6, // 顶点索引
+
+    // 第四个三角形（6）
+    1, 5, 3, // 顶点索引
+    5, 7, 3, // 顶点索引
+
+    // 第五个三角形（8）
+    0, 4, 1, // 顶点索引
+    4, 5, 1, // 顶点索引
+
+    // 第六个三角形（10）
+    2, 3, 6, // 顶点索引
+    6, 3, 7, // 顶点索引
 };
 
+// 定义一个静态常量数组 s_cubeTriStrip，用于存储立方体的三角形条带索引列表
 static const uint16_t s_cubeTriStrip[] =
 {
 	0, 1, 2,
@@ -95,6 +108,7 @@ static const uint16_t s_cubeTriStrip[] =
 	5,
 };
 
+// 定义一个静态常量数组 s_cubeLineList，用于存储立方体的线段索引列表
 static const uint16_t s_cubeLineList[] =
 {
 	0, 1,
@@ -111,6 +125,7 @@ static const uint16_t s_cubeLineList[] =
 	6, 7,
 };
 
+// 定义一个静态常量数组 s_cubeLineStrip，用于存储立方体的线段条带索引列表
 static const uint16_t s_cubeLineStrip[] =
 {
 	0, 2, 3, 1, 5, 7, 6, 4,
@@ -118,18 +133,22 @@ static const uint16_t s_cubeLineStrip[] =
 	0,
 };
 
+// 定义一个静态常量数组 s_cubePoints，用于存储立方体的顶点索引列表
 static const uint16_t s_cubePoints[] =
 {
-	0, 1, 2, 3, 4, 5, 6, 7
+    // 立方体的所有顶点
+    0, 1, 2, 3, 4, 5, 6, 7 // 顶点索引
 };
 
-static const char* s_ptNames[]
+// 定义一个静态常量字符串数组 s_ptNames，用于存储图元类型的名称
+static const char* s_ptNames[] =
 {
-	"Triangle List",
-	"Triangle Strip",
-	"Lines",
-	"Line Strip",
-	"Points",
+    // 图元类型名称
+    "Triangle List", // 三角形列表
+    "Triangle Strip", // 三角形条带
+    "Lines", // 线段
+    "Line Strip", // 线段条带
+    "Points", // 点
 };
 
 static const uint64_t s_ptState[]
