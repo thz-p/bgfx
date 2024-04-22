@@ -416,6 +416,7 @@ float vertLerp(float* _result, float _iso, uint32_t _idx0, float _v0, uint32_t _
     return lerp; // 返回插值参数
 }
 
+// 这段代码实现了通过 Marching Cubes 算法对立方体进行三角化，并生成等值面上的顶点和法线。
 uint32_t triangulate(
     uint8_t* _result,
     uint32_t _stride,
