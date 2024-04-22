@@ -417,85 +417,93 @@ float vertLerp(float* _result, float _iso, uint32_t _idx0, float _v0, uint32_t _
 }
 
 uint32_t triangulate(
-	  uint8_t* _result
-	, uint32_t _stride
-	, const float* _rgb
-	, const float* _xyz
-	, const Grid* _val[8]
-	, float _iso
-	, float _scale
-	)
+    uint8_t* _result,
+    uint32_t _stride,
+    const float* _rgb,
+    const float* _xyz,
+    const Grid* _val[8],
+    float _iso,
+    float _scale
+)
 {
-	uint8_t cubeindex = 0;
-	cubeindex |= (_val[0]->m_val < _iso) ? 0x01 : 0;
-	cubeindex |= (_val[1]->m_val < _iso) ? 0x02 : 0;
-	cubeindex |= (_val[2]->m_val < _iso) ? 0x04 : 0;
-	cubeindex |= (_val[3]->m_val < _iso) ? 0x08 : 0;
-	cubeindex |= (_val[4]->m_val < _iso) ? 0x10 : 0;
-	cubeindex |= (_val[5]->m_val < _iso) ? 0x20 : 0;
-	cubeindex |= (_val[6]->m_val < _iso) ? 0x40 : 0;
-	cubeindex |= (_val[7]->m_val < _iso) ? 0x80 : 0;
+    // 计算立方体的索引
+    uint8_t cubeindex = 0;
+    cubeindex |= (_val[0]->m_val < _iso) ? 0x01 : 0;
+    cubeindex |= (_val[1]->m_val < _iso) ? 0x02 : 0;
+    cubeindex |= (_val[2]->m_val < _iso) ? 0x04 : 0;
+    cubeindex |= (_val[3]->m_val < _iso) ? 0x08 : 0;
+    cubeindex |= (_val[4]->m_val < _iso) ? 0x10 : 0;
+    cubeindex |= (_val[5]->m_val < _iso) ? 0x20 : 0;
+    cubeindex |= (_val[6]->m_val < _iso) ? 0x40 : 0;
+    cubeindex |= (_val[7]->m_val < _iso) ? 0x80 : 0;
 
-	if (0 == s_edges[cubeindex])
-	{
-		return 0;
-	}
+    // 检查立方体的索引对应的边缘是否存在
+    if (0 == s_edges[cubeindex])
+    {
+        return 0; // 如果不存在，则返回 0
+    }
 
-	float verts[12][6];
-	uint16_t flags = s_edges[cubeindex];
+    float verts[12][6];
+    uint16_t flags = s_edges[cubeindex]; // 获取边缘标志
 
-	for (uint32_t ii = 0; ii < 12; ++ii)
-	{
-		if (flags & (1<<ii) )
-		{
-			uint32_t idx0 = ii&7;
-			uint32_t idx1 = "\x1\x2\x3\x0\x5\x6\x7\x4\x4\x5\x6\x7"[ii];
-			float* vertex = verts[ii];
-			float lerp = vertLerp(vertex, _iso, idx0, _val[idx0]->m_val, idx1, _val[idx1]->m_val);
+    // 对立方体的 12 条边进行插值
+    for (uint32_t ii = 0; ii < 12; ++ii)
+    {
+        if (flags & (1 << ii)) // 检查边缘标志
+        {
+            uint32_t idx0 = ii & 7;
+            uint32_t idx1 = "\x1\x2\x3\x0\x5\x6\x7\x4\x4\x5\x6\x7"[ii];
+            float* vertex = verts[ii];
+            float lerp = vertLerp(vertex, _iso, idx0, _val[idx0]->m_val, idx1, _val[idx1]->m_val); // 调用线性插值函数进行插值
 
-			const float* na = _val[idx0]->m_normal;
-			const float* nb = _val[idx1]->m_normal;
-			vertex[3] = na[0] + lerp * (nb[0] - na[0]);
-			vertex[4] = na[1] + lerp * (nb[1] - na[1]);
-			vertex[5] = na[2] + lerp * (nb[2] - na[2]);
-		}
-	}
+            const float* na = _val[idx0]->m_normal;
+            const float* nb = _val[idx1]->m_normal;
+            // 计算插值后的法线
+            vertex[3] = na[0] + lerp * (nb[0] - na[0]);
+            vertex[4] = na[1] + lerp * (nb[1] - na[1]);
+            vertex[5] = na[2] + lerp * (nb[2] - na[2]);
+        }
+    }
 
-	const float dr = _rgb[3] - _rgb[0];
-	const float dg = _rgb[4] - _rgb[1];
-	const float db = _rgb[5] - _rgb[2];
+    // 计算颜色值的增量
+    const float dr = _rgb[3] - _rgb[0];
+    const float dg = _rgb[4] - _rgb[1];
+    const float db = _rgb[5] - _rgb[2];
 
-	uint32_t num = 0;
-	const int8_t* indices = s_indices[cubeindex];
-	for (uint32_t ii = 0; indices[ii] != -1; ++ii)
-	{
-		const float* vertex = verts[uint8_t(indices[ii])];
+    uint32_t num = 0;
+    const int8_t* indices = s_indices[cubeindex];
+    for (uint32_t ii = 0; indices[ii] != -1; ++ii)
+    {
+        const float* vertex = verts[uint8_t(indices[ii])]; // 获取顶点坐标和法线
 
-		float* xyz = (float*)_result;
-		xyz[0] = _xyz[0] + vertex[0]*_scale;
-		xyz[1] = _xyz[1] + vertex[1]*_scale;
-		xyz[2] = _xyz[2] + vertex[2]*_scale;
+        float* xyz = (float*)_result;
+        // 计算顶点位置
+        xyz[0] = _xyz[0] + vertex[0] * _scale;
+        xyz[1] = _xyz[1] + vertex[1] * _scale;
+        xyz[2] = _xyz[2] + vertex[2] * _scale;
 
-		xyz[3] = vertex[3]*_scale;
-		xyz[4] = vertex[4]*_scale;
-		xyz[5] = vertex[5]*_scale;
+        // 存储法线
+        xyz[3] = vertex[3] * _scale;
+        xyz[4] = vertex[4] * _scale;
+        xyz[5] = vertex[5] * _scale;
 
-		uint32_t rr = uint8_t( (_rgb[0] + vertex[0]*dr)*255.0f);
-		uint32_t gg = uint8_t( (_rgb[1] + vertex[1]*dg)*255.0f);
-		uint32_t bb = uint8_t( (_rgb[2] + vertex[2]*db)*255.0f);
+        // 计算颜色值
+        uint32_t rr = uint8_t((_rgb[0] + vertex[0] * dr) * 255.0f);
+        uint32_t gg = uint8_t((_rgb[1] + vertex[1] * dg) * 255.0f);
+        uint32_t bb = uint8_t((_rgb[2] + vertex[2] * db) * 255.0f);
 
-		uint32_t* abgr = (uint32_t*)&_result[24];
-		*abgr = 0xff000000
-			  | (bb<<16)
-			  | (gg<<8)
-			  | rr
-			  ;
+        uint32_t* abgr = (uint32_t*)&_result[24];
+        // 存储颜色值
+        *abgr = 0xff000000
+            | (bb << 16)
+            | (gg << 8)
+            | rr;
 
-		_result += _stride;
-		++num;
-	}
+        _result += _stride; // 更新结果指针
+        ++num; // 更新顶点数量
+    }
 
-	return num;
+    return num; // 返回生成的顶点数量
 }
 
 constexpr uint32_t kMaxDims  = 32;
