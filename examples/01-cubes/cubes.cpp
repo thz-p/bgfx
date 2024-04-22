@@ -10,37 +10,57 @@
 namespace
 {
 
+// 定义了一个结构体 PosColorVertex，用于表示带有位置和颜色信息的顶点
 struct PosColorVertex
 {
-	float m_x;
-	float m_y;
-	float m_z;
-	uint32_t m_abgr;
+    // 顶点的 x 坐标
+    float m_x;
+    // 顶点的 y 坐标
+    float m_y;
+    // 顶点的 z 坐标
+    float m_z;
+    // 顶点的颜色，使用 uint32_t 类型存储，采用 ABGR 格式（Alpha、Blue、Green、Red）
+    uint32_t m_abgr;
 
-	static void init()
-	{
-		ms_layout
-			.begin()
-			.add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
-			.add(bgfx::Attrib::Color0,   4, bgfx::AttribType::Uint8, true)
-			.end();
-	};
+    // 初始化函数，用于设置顶点布局
+    static void init()
+    {
+        // 开始定义顶点布局
+        ms_layout
+            .begin()
+            // 添加位置信息，使用 3 个 float 类型数据表示
+            .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
+            // 添加颜色信息，使用 4 个 uint8_t 类型数据表示，采用 true 表示颜色数据会被归一化处理
+            .add(bgfx::Attrib::Color0,   4, bgfx::AttribType::Uint8, true)
+            // 结束定义顶点布局
+            .end();
+    };
 
-	static bgfx::VertexLayout ms_layout;
+    // 定义顶点布局的静态成员变量
+    static bgfx::VertexLayout ms_layout;
 };
 
 bgfx::VertexLayout PosColorVertex::ms_layout;
 
+// 定义一个静态数组 s_cubeVertices，用于存储立方体的顶点数据
 static PosColorVertex s_cubeVertices[] =
 {
-	{-1.0f,  1.0f,  1.0f, 0xff000000 },
-	{ 1.0f,  1.0f,  1.0f, 0xff0000ff },
-	{-1.0f, -1.0f,  1.0f, 0xff00ff00 },
-	{ 1.0f, -1.0f,  1.0f, 0xff00ffff },
-	{-1.0f,  1.0f, -1.0f, 0xffff0000 },
-	{ 1.0f,  1.0f, -1.0f, 0xffff00ff },
-	{-1.0f, -1.0f, -1.0f, 0xffffff00 },
-	{ 1.0f, -1.0f, -1.0f, 0xffffffff },
+    // 顶点1：(-1.0, 1.0, 1.0)，颜色为红色
+    {-1.0f,  1.0f,  1.0f, 0xff000000 },
+    // 顶点2：(1.0, 1.0, 1.0)，颜色为蓝色
+    { 1.0f,  1.0f,  1.0f, 0xff0000ff },
+    // 顶点3：(-1.0, -1.0, 1.0)，颜色为绿色
+    {-1.0f, -1.0f,  1.0f, 0xff00ff00 },
+    // 顶点4：(1.0, -1.0, 1.0)，颜色为青色
+    { 1.0f, -1.0f,  1.0f, 0xff00ffff },
+    // 顶点5：(-1.0, 1.0, -1.0)，颜色为黄色
+    {-1.0f,  1.0f, -1.0f, 0xffff0000 },
+    // 顶点6：(1.0, 1.0, -1.0)，颜色为洋红色
+    { 1.0f,  1.0f, -1.0f, 0xffff00ff },
+    // 顶点7：(-1.0, -1.0, -1.0)，颜色为白色
+    {-1.0f, -1.0f, -1.0f, 0xffffff00 },
+    // 顶点8：(1.0, -1.0, -1.0)，颜色为透明色
+    { 1.0f, -1.0f, -1.0f, 0xffffffff },
 };
 
 static const uint16_t s_cubeTriList[] =
