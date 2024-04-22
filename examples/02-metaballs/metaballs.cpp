@@ -370,44 +370,50 @@ static const int8_t s_indices[256][16] =
 
 static const float s_cube[8][3] =
 {
-	{ 0.0f, 1.0f, 1.0f }, // 0
-	{ 1.0f, 1.0f, 1.0f }, // 1
-	{ 1.0f, 1.0f, 0.0f }, // 2
-	{ 0.0f, 1.0f, 0.0f }, // 3
-	{ 0.0f, 0.0f, 1.0f }, // 4
-	{ 1.0f, 0.0f, 1.0f }, // 5
-	{ 1.0f, 0.0f, 0.0f }, // 6
-	{ 0.0f, 0.0f, 0.0f }, // 7
+    // 立方体的 8 个顶点坐标
+    { 0.0f, 1.0f, 1.0f }, // 顶点0
+    { 1.0f, 1.0f, 1.0f }, // 顶点1
+    { 1.0f, 1.0f, 0.0f }, // 顶点2
+    { 0.0f, 1.0f, 0.0f }, // 顶点3
+    { 0.0f, 0.0f, 1.0f }, // 顶点4
+    { 1.0f, 0.0f, 1.0f }, // 顶点5
+    { 1.0f, 0.0f, 0.0f }, // 顶点6
+    { 0.0f, 0.0f, 0.0f }, // 顶点7
 };
 
 float vertLerp(float* _result, float _iso, uint32_t _idx0, float _v0, uint32_t _idx1, float _v1)
 {
-	const float* edge0 = s_cube[_idx0];
-	const float* edge1 = s_cube[_idx1];
+    const float* edge0 = s_cube[_idx0]; // 获取第一个顶点的坐标
+    const float* edge1 = s_cube[_idx1]; // 获取第二个顶点的坐标
 
-	if (bx::abs(_iso-_v1) < 0.00001f)
-	{
-		_result[0] = edge1[0];
-		_result[1] = edge1[1];
-		_result[2] = edge1[2];
-		return 1.0f;
-	}
+    if (bx::abs(_iso - _v1) < 0.00001f)
+    {
+        // 如果与第二个顶点的值相等，则直接返回第二个顶点的坐标，并将结果存储在 _result 中
+        _result[0] = edge1[0];
+        _result[1] = edge1[1];
+        _result[2] = edge1[2];
+        return 1.0f; // 返回插值参数为 1.0
+    }
 
-	if (bx::abs(_iso-_v0) < 0.00001f
-	||  bx::abs(_v0-_v1) < 0.00001f)
-	{
-		_result[0] = edge0[0];
-		_result[1] = edge0[1];
-		_result[2] = edge0[2];
-		return 0.0f;
-	}
+    if (bx::abs(_iso - _v0) < 0.00001f
+        || bx::abs(_v0 - _v1) < 0.00001f)
+    {
+        // 如果与第一个顶点的值相等，或者第一个顶点的值与第二个顶点的值相等，则直接返回第一个顶点的坐标，并将结果存储在 _result 中
+        _result[0] = edge0[0];
+        _result[1] = edge0[1];
+        _result[2] = edge0[2];
+        return 0.0f; // 返回插值参数为 0.0
+    }
 
-	float lerp = (_iso - _v0) / (_v1 - _v0);
-	_result[0] = edge0[0] + lerp * (edge1[0] - edge0[0]);
-	_result[1] = edge0[1] + lerp * (edge1[1] - edge0[1]);
-	_result[2] = edge0[2] + lerp * (edge1[2] - edge0[2]);
+    // 计算插值参数
+    float lerp = (_iso - _v0) / (_v1 - _v0);
 
-	return lerp;
+    // 根据插值参数计算出结果，并存储在 _result 中
+    _result[0] = edge0[0] + lerp * (edge1[0] - edge0[0]);
+    _result[1] = edge0[1] + lerp * (edge1[1] - edge0[1]);
+    _result[2] = edge0[2] + lerp * (edge1[2] - edge0[2]);
+
+    return lerp; // 返回插值参数
 }
 
 uint32_t triangulate(
