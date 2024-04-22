@@ -26,21 +26,27 @@ static const bgfx::EmbeddedShader s_embeddedShaders[] =
 
 struct PosNormalColorVertex
 {
-	float m_pos[3];
-	float m_normal[3];
-	uint32_t m_abgr;
+    // 顶点位置
+    float m_pos[3];
+    // 顶点法线
+    float m_normal[3];
+    // 颜色，使用 32 位无符号整数表示
+    uint32_t m_abgr;
 
-	static void init()
-	{
-		ms_layout
-			.begin()
-			.add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
-			.add(bgfx::Attrib::Normal,   3, bgfx::AttribType::Float)
-			.add(bgfx::Attrib::Color0,   4, bgfx::AttribType::Uint8, true)
-			.end();
-	};
+    // 初始化顶点布局
+    static void init()
+    {
+        // 设置顶点布局
+        ms_layout
+            .begin()
+            .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
+            .add(bgfx::Attrib::Normal,   3, bgfx::AttribType::Float)
+            .add(bgfx::Attrib::Color0,   4, bgfx::AttribType::Uint8, true)
+            .end();
+    };
 
-	static bgfx::VertexLayout ms_layout;
+    // 静态成员，用于存储顶点布局
+    static bgfx::VertexLayout ms_layout;
 };
 
 bgfx::VertexLayout PosNormalColorVertex::ms_layout;
