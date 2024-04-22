@@ -151,15 +151,19 @@ static const char* s_ptNames[] =
     "Points", // 点
 };
 
-static const uint64_t s_ptState[]
+// 定义一个静态常量数组 s_ptState，用于存储图元类型的状态
+static const uint64_t s_ptState[] =
 {
-	UINT64_C(0),
-	BGFX_STATE_PT_TRISTRIP,
-	BGFX_STATE_PT_LINES,
-	BGFX_STATE_PT_LINESTRIP,
-	BGFX_STATE_PT_POINTS,
+    // 图元类型的状态
+    UINT64_C(0), // 默认状态
+    BGFX_STATE_PT_TRISTRIP, // 三角形条带状态
+    BGFX_STATE_PT_LINES, // 线段状态
+    BGFX_STATE_PT_LINESTRIP, // 线段条带状态
+    BGFX_STATE_PT_POINTS, // 点状态
 };
-BX_STATIC_ASSERT(BX_COUNTOF(s_ptState) == BX_COUNTOF(s_ptNames) );
+
+// 静态断言，用于确保 s_ptState 数组的长度与 s_ptNames 数组的长度相同
+BX_STATIC_ASSERT(BX_COUNTOF(s_ptState) == BX_COUNTOF(s_ptNames));
 
 class ExampleCubes : public entry::AppI
 {
