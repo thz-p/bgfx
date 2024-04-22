@@ -53,16 +53,19 @@ bgfx::VertexLayout PosNormalColorVertex::ms_layout;
 
 struct Grid
 {
-	Grid()
-		: m_val(0.0f)
-	{
-		m_normal[0] = 0.0f;
-		m_normal[1] = 0.0f;
-		m_normal[2] = 0.0f;
-	}
+    // 默认构造函数，初始化 m_val 为 0.0，m_normal 为 (0.0, 0.0, 0.0)
+    Grid()
+        : m_val(0.0f)
+    {
+        m_normal[0] = 0.0f;
+        m_normal[1] = 0.0f;
+        m_normal[2] = 0.0f;
+    }
 
-	float m_val;
-	float m_normal[3];
+    // 网格单元的值
+    float m_val;
+    // 网格单元的法线向量
+    float m_normal[3];
 };
 
 // Reference(s):
